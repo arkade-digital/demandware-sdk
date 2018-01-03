@@ -1,6 +1,6 @@
 <?php
 
-namespace Arkade\Responsys;
+namespace Arkade\Demandware;
 
 use GuzzleHttp;
 use Carbon\Carbon;
@@ -99,6 +99,19 @@ class Authentication
     }
 
     /**
+     * Set the Site Name (Client List ID).
+     *
+     * @param string $apiVersion
+     * @return $this
+     */
+    public function setSiteName($apiVersion)
+    {
+        $this->siteName = $apiVersion;
+
+        return $this;
+    }
+
+    /**
      * Set the auth URL.
      *
      * @param string $authUrl
@@ -118,7 +131,7 @@ class Authentication
      */
     public function getAuthUrl()
     {
-        return sprintf('%s/rest/api/v%s/auth/token', $this->authUrl, $this->getApiVersion());
+        return $this->authUrl;
     }
 
     /**
@@ -141,7 +154,8 @@ class Authentication
      */
     public function getEndpoint()
     {
-        return sprintf('%s/rest/api/v%s/', $this->endpoint, $this->getApiVersion());
+
+        return sprintf('%s/s/-/dw/data/v%s/', $this->endpoint, $this->getApiVersion());
     }
 
     /**
@@ -154,6 +168,7 @@ class Authentication
         if ($this->token) return $this->isTokenExpired() ? $this->refreshPasswordCredentialsToken() : $this->token;
 
         return $this->createPasswordCredentialsToken();
+
     }
 
     /**
@@ -224,12 +239,11 @@ class Authentication
         $response = $this->guzzle->request('POST', $this->getAuthUrl(), $params);
         $result = json_decode((string) $response->getBody());
 
-        $this->setToken($result->authToken)
+        $this->setToken($result->access_token)
              ->setTokenExpiry(
-                 Carbon::createFromTimestamp($result->issuedAt)
+                 Carbon::now()
                        ->addMinutes(120)
-             )
-             ->setEndpoint($result->endPoint);
+             );
 
         return $this->token;
     }
@@ -241,24 +255,23 @@ class Authentication
      */
     public function createPasswordCredentialsToken()
     {
+
+        $authorization_token = base64_encode($this->getUsername() . ':' . $this->getPassword());
+
         $params = [
-            'form_params' => [
-                'user_name' => $this->getUsername(),
-                'password'  => $this->getPassword(),
-                'auth_type' => 'password',
-            ],
+            'headers' => [ 'Authorization' => 'Basic '. $authorization_token],
+            'form_params' => ["grant_type" => env('DW_GRANT_TYPE')]
         ];
 
         // Make the Request and process the response
         $response = $this->guzzle->request('POST', $this->getAuthUrl(), $params);
         $result = json_decode((string) $response->getBody());
 
-        $this->setToken($result->authToken)
+        $this->setToken($result->access_token)
              ->setTokenExpiry(
-                 Carbon::createFromTimestamp($result->issuedAt)
-                       ->addMinutes(120)
-             )
-             ->setEndpoint($result->endPoint);
+                 Carbon::now()
+                       ->addSeconds($result->expires_in)
+             );
 
         return $this->token;
     }

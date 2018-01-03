@@ -1,10 +1,10 @@
 <?php
 
-namespace Arkade\Responsys;
+namespace Arkade\Demandware;
 
 use Psr\Http;
 use GuzzleHttp;
-use Arkade\Responsys;
+use Arkade\Demandware;
 
 class Client
 {
@@ -14,12 +14,12 @@ class Client
     protected $client;
 
     /**
-     * @var Responsys\Authentication
+     * @var Demandware\Authentication
      */
     protected $auth;
 
     /**
-     * @var Responsys\Source
+     * @var Demandware\Source
      */
     protected $source;
 
@@ -29,7 +29,7 @@ class Client
      * @param Authentication $auth
      * @param GuzzleHttp\HandlerStack|null $handler
      */
-    public function __construct(Responsys\Authentication $auth, GuzzleHttp\HandlerStack $handler = null)
+    public function __construct(Demandware\Authentication $auth, GuzzleHttp\HandlerStack $handler = null)
     {
         $this->auth = $auth;
 
@@ -38,18 +38,7 @@ class Client
         ]);
     }
 
-    /**
-     * Set the source.
-     *
-     * @param Responsys\Source $source
-     * @return $this
-     */
-    public function setSource(Responsys\Source $source)
-    {
-        $this->source = $source;
 
-        return $this;
-    }
 
     /**
      * Make a request.
@@ -64,9 +53,10 @@ class Client
     {
         $headers = [
             'headers' => [
-                'Authorization' => $this->auth->getToken(),
+                'Authorization' => 'Bearer ' . $this->auth->getToken(),
             ],
         ];
+
 
         try {
             $response = $this->client->request(
@@ -122,38 +112,10 @@ class Client
      *
      * @return Modules\ProfileExtension
      */
-    public function profileExtension()
+    public function customers()
     {
-        return new Modules\ProfileExtension($this, $this->source);
+        return new Modules\Customers($this);
     }
 
-    /**
-     * Profile list module.
-     *
-     * @return Modules\ProfileList
-     */
-    public function profileList()
-    {
-        return new Modules\ProfileList($this, $this->source);
-    }
 
-    /**
-     * Supplemental table module.
-     *
-     * @return Modules\SupplementalTable
-     */
-    public function supplementalTable()
-    {
-        return new Modules\SupplementalTable($this, $this->source);
-    }
-
-    /**
-     * Trigger module.
-     *
-     * @return Modules\Trigger
-     */
-    public function trigger()
-    {
-        return new Modules\Trigger($this, $this->source);
-    }
 }

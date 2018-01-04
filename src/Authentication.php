@@ -260,7 +260,7 @@ class Authentication
 
         $params = [
             'headers' => [ 'Authorization' => 'Basic '. $authorization_token],
-            'form_params' => ["grant_type" => env('DW_GRANT_TYPE')]
+            'form_params' => ['grant_type' => env('DW_GRANT_TYPE', 'client_credentials')]
         ];
 
         // Make the Request and process the response

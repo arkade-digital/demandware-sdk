@@ -1,11 +1,13 @@
-# Responsys PHP SDK
+# SFCC/Demandware PHP SDK
 
-This SDK provides simple access to the Responsys REST API. 
+This SDK provides simple access to the Demandware API. 
 It currently handles the following requests
 
-- Retrieve profile list recipients
-- Merge profile list recipients
-- Merge profile extension recipients
+- Create Customer records
+- Update Customer records
+- Retreive Customer record by ID
+- Searching Customers in a list
+
 
 ## Contents
 
@@ -18,8 +20,8 @@ It currently handles the following requests
 Install the SDK into your project using Composer.
 
 ```bash
-composer config repositories.responsys-sdk git git@github.com:arkade-digital/responsys-sdk.git
-composer require arkade/responsys-sdk
+composer config repositories.demandware-sdk git git@github.com:arkade-digital/demandware-sdk.git
+composer require arkade/demandware-sdk
 ```
 
 ## Integrating with Laravel
@@ -31,7 +33,7 @@ This package ships with a Laravel specific service provider which allows you to 
 Add the following to the `providers` array in your `config/app.php` file.
 
 ```php
-Arkade\Responsys\LaravelServiceProvider::class
+Arkade\Demandware\LaravelServiceProvider::class
 ```
 
 ### Adding config keys
@@ -39,11 +41,14 @@ Arkade\Responsys\LaravelServiceProvider::class
 In your `config/services.php` file, add the following to the array.
 
 ```php
-'responsys' => [
-    'username'      => env('RESPONSYS_USERNAME'),
-    'password'   => env('RESPONSYS_PASSWORD'),
-    'list'   => env('RESPONSYS_LIST'),
-]
+'demandware'=> [
+        'version' => env('DW_API_VERSION'),
+        'siteName' => env('DW_SITE_NAME'),
+        'clientId' => env('DW_CLIENT_ID'),
+        'clientSecret' => env('DW_CLIENT_SECRET'),
+        'authUrl' => env('DW_AUTH_URL', 'http://account.demandware.com/dw/oauth2/access_token'),
+        'endpoint' => env('DW_ENDPOINT'),
+    ]
 ```
 
 ### Adding environment keys
@@ -51,9 +56,11 @@ In your `config/services.php` file, add the following to the array.
 In your `.env` file, add the following keys.
 
 ```ini
-RESPONSYS_USERNAME=
-RESPONSYS_PASSWORD=
-RESPONSYS_LIST=
+DW_API_VERSION=
+DW_SITE_NAME=
+DW_CLIENT_ID=
+DW_CLIENT_SECRET=
+DW_ENDPOINT=
 ```
 
 ### Resolving a client
@@ -63,7 +70,7 @@ To resolve a client, you simply pull it from the service container. This can be 
 #### Dependency Injection
 
 ```php
-use Arkade\Responsys\Client;
+use Arkade\Demandware\Client;
 
 public function yourControllerMethod(Client $client) {
     // Call methods on $client
@@ -73,10 +80,10 @@ public function yourControllerMethod(Client $client) {
 #### Using the `app()` helper
 
 ```php
-use Arkade\Responsys\Client;
+use Arkade\Demandware\Client;
 
 public function anyMethod() {
-    $client = app(Client::class, ['username' => '', 'password' => '']);
+    $client = app(Client::class);
     // Call methods on $client
 }
 ```
@@ -84,17 +91,36 @@ public function anyMethod() {
 ### Available methods
 
 ```
-$client->mergeProfileListRecipients(array $recipients);
+$client->customers()->list();
 
-$client->mergeProfileExtensionRecipients($profileExtensionTable, array $recipients);
+$client->customers()->getFromId(Int $id);
+
+$client->customers()->create(Array $customerData)
+
+$client->customers()->search(
+            [
+                'text_query' => [
+                    'fields' => ['first_name'],
+                    'search_phrase' => 'joe'
+                ]
+            ]
+
+$client->customers()->update( '00000001',
+            [
+                'credentials' => [
+                    'login' => 'hello@world.com'
+                ],
+                "phone_mobile" => '0412345678'
+            ]
+
+        ))
 ```
 
-Refer to the Responsys REST API documentation for further information
-https://docs.oracle.com/cloud/latest/marketingcs_gs/OMCED/index.html
+Refer to the Demandware documentation for further information
+https://documentation.demandware.com/DOC1/topic/com.demandware.dochelp/OCAPI/17.8/data/Resources/CustomerLists.html
 
-## Webhooks
 
-WIP
+
 
 ## Contributing
 
@@ -104,6 +130,4 @@ All public methods should be accompanied with unit tests.
 
 ### Testing
 
-```bash
-./vendor/bin/phpunit
-```
+Coming soon

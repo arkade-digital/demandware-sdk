@@ -72,6 +72,18 @@ class Client
     }
 
     /**
+     * Perform a PATCH request.
+     *
+     * @param $endpoint
+     * @param array $params
+     * @return Http\Message\ResponseInterface
+     */
+    public function patch($endpoint, array $params = [])
+    {
+        return $this->request('PATCH', $endpoint, $params);
+    }
+
+    /**
      * Perform a POST request.
      *
      * @param $endpoint

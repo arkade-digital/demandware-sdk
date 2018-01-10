@@ -5,7 +5,7 @@ namespace Arkade\Demandware\Parsers;
 use Carbon\Carbon;
 use Arkade\Demandware\Entities;
 
-class OrderParser
+class CustomerParser
 {
     /**
      * Parse the given array to a Customer entity.

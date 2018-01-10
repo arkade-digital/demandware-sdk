@@ -2,7 +2,7 @@
 
 namespace Arkade\Demandware\Modules;
 
-use Arkade\Demandware\Modules\AbstractModule;
+use Arkade\Demandware\Parsers\CustomerParser;
 
 Class Customers Extends AbstractModule
 {
@@ -13,7 +13,11 @@ Class Customers Extends AbstractModule
      */
     public function getFromId($id)
     {
-        return $this->client->get("customer_lists/{$this->getSiteName()}/customers/{$id}");
+        return (new CustomerParser)->parse(
+            $this->client->get(
+                "customer_lists/{$this->getSiteName()}/customers/{$id}"
+            )
+        );
     }
 
     /**

@@ -21,14 +21,6 @@ Class Customers Extends AbstractModule
     }
 
     /**
-     * @return \Psr\Http\Message\ResponseInterface
-     */
-    public function list()
-    {
-        return $this->client->get("customer_lists/{$this->getSiteName()}");
-    }
-
-    /**
      * @param array $customerData
      * @return \Psr\Http\Message\ResponseInterface
      *
@@ -69,9 +61,21 @@ Class Customers Extends AbstractModule
      */
     public function search(array $searchQuery)
     {
-        return $this->client->post("customer_lists/{$this->getSiteName()}/customer_search", [
+        $data = $this->client->post("customer_lists/{$this->getSiteName()}/customer_search", [
             'json' => ['query' => $searchQuery]
         ]);
+
+        $collection = new Collection;
+
+        if($data->count == 0) return $collection;
+
+        foreach($data->hits as $item){
+            $collection->push(
+                (new CustomerParser)->parse($item)
+            );
+        }
+
+        return $collection;
     }
 
 

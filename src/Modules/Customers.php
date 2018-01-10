@@ -32,7 +32,12 @@ Class Customers Extends AbstractModule
      */
     public function create(array $customerData)
     {
-        return $this->client->post("customer_lists/{$this->getSiteName()}/customers", ['json' => $customerData]);
+        return (new CustomerParser)->parse(
+            $this->client->post(
+                "customer_lists/{$this->getSiteName()}/customers",
+                ['json' => $customerData]
+            )
+        );
     }
 
     /**
@@ -44,7 +49,12 @@ Class Customers Extends AbstractModule
      */
     public function update(string $customerNo, array $customerData)
     {
-        return $this->client->patch("customer_lists/{$this->getSiteName()}/customers/{$customerNo}", ['json' => $customerData]);
+        return (new CustomerParser)->parse(
+            $this->client->patch(
+                "customer_lists/{$this->getSiteName()}/customers/{$customerNo}",
+                ['json' => $customerData]
+            )
+        );
     }
 
     /**

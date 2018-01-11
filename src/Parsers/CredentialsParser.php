@@ -24,8 +24,8 @@ class CredentialsParser
         $credentials->setEnabled($enabled);
 
         $locked = false;
-        if(!empty($payload->enabled)){
-            $locked = $payload->enabled;
+        if(!empty($payload->locked)){
+            $locked = $payload->locked;
         }
         $credentials->setLocked($locked);
 

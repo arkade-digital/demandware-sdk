@@ -15,6 +15,9 @@ class CustomerParser
      */
     public function parse($payload)
     {
+
+        dump($payload);
+
         $customer = (new Entities\Customer)
             ->setCreationDate(Carbon::parse((string) $payload->creation_date))
             ->setLastModified(Carbon::parse((string) $payload->last_modified))
@@ -67,6 +70,22 @@ class CustomerParser
 
         if(!empty($payload->title)){
             $customer->setTitle($payload->title);
+        }
+
+        if(!empty($payload->last_login_time)){
+            $customer->setLastLoginTime(Carbon::parse((string) $payload->last_login_time));
+        }
+
+        if(!empty($payload->last_visit_time)){
+            $customer->setLastVisitTime(Carbon::parse((string) $payload->last_visit_time));
+        }
+
+        if(!empty($payload->previous_login_time)){
+            $customer->setPreviousLoginTime(Carbon::parse((string) $payload->previous_login_time));
+        }
+
+        if(!empty($payload->previous_visit_time)){
+            $customer->setPreviousVisitTime(Carbon::parse((string) $payload->previous_visit_time));
         }
 
         if(!empty($payload->credentials)){

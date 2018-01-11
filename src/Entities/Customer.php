@@ -102,6 +102,26 @@ class Customer extends AbstractEntity
     protected $lastModified;
 
     /**
+     * @var Carbon
+     */
+    protected $lastLoginTime;
+
+    /**
+     * @var Carbon
+     */
+    protected $lastVisitTime;
+
+    /**
+     * @var Carbon
+     */
+    protected $previousLoginTime;
+
+    /**
+     * @var Carbon
+     */
+    protected $previousVisitTime;
+
+    /**
      * @return string
      */
     public function getCustomerId()
@@ -444,11 +464,85 @@ class Customer extends AbstractEntity
     }
 
     /**
+     * @return Carbon
+     */
+    public function getLastLoginTime()
+    {
+        return $this->lastLoginTime;
+    }
+
+    /**
+     * @param Carbon $lastLoginTime
+     * @return Customer
+     */
+    public function setLastLoginTime(Carbon $lastLoginTime = null)
+    {
+        $this->lastLoginTime = $lastLoginTime;
+        return $this;
+    }
+
+    /**
+     * @return Carbon
+     */
+    public function getLastVisitTime()
+    {
+        return $this->lastVisitTime;
+    }
+
+    /**
+     * @param Carbon $lastVisitTime
+     * @return Customer
+     */
+    public function setLastVisitTime(Carbon $lastVisitTime = null)
+    {
+        $this->lastVisitTime = $lastVisitTime;
+        return $this;
+    }
+
+    /**
+     * @return Carbon
+     */
+    public function getPreviousLoginTime()
+    {
+        return $this->previousLoginTime;
+    }
+
+    /**
+     * @param Carbon $previousLoginTime
+     * @return Customer
+     */
+    public function setPreviousLoginTime(Carbon $previousLoginTime = null)
+    {
+        $this->previousLoginTime = $previousLoginTime;
+        return $this;
+    }
+
+    /**
+     * @return Carbon
+     */
+    public function getPreviousVisitTime()
+    {
+        return $this->previousVisitTime;
+    }
+
+    /**
+     * @param Carbon $previousVisitTime
+     * @return Customer
+     */
+    public function setPreviousVisitTime(Carbon $previousVisitTime = null)
+    {
+        $this->previousVisitTime = $previousVisitTime;
+        return $this;
+    }
+
+    /**
      * @return Array
      */
     public function jsonSerialize()
     {
         $result = get_object_vars($this);
+
+        if(!is_null($result['birthday'])) $result['birthday'] = $result['birthday']->toDateString();
 
         return $result;
     }

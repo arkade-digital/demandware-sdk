@@ -14,13 +14,28 @@ Class Customers Extends AbstractModule
      * @param $id
      * @return Customer
      */
-    public function getFromId($id)
+    public function findById($id)
     {
         return (new CustomerParser)->parse(
             $this->client->get(
                 "customer_lists/{$this->getSiteName()}/customers/{$id}"
             )
         );
+    }
+
+    /**
+     * @param $email
+     * @return Customer|false
+     */
+    public function findByEmail($email)
+    {
+        $data = $this->search('email', $email);
+
+        if(count($data)){
+            return $this->findById($data->first());
+        }
+
+        return false;
     }
 
     /**
@@ -34,7 +49,12 @@ Class Customers Extends AbstractModule
         return (new CustomerParser)->parse(
             $this->client->post(
                 "customer_lists/{$this->getSiteName()}/customers",
-                ['json' => (new CustomerSerializer)->serialize($customer)]
+                [
+                    //'json' => (new CustomerSerializer)->serialize($customer)
+                    'headers' => ['Content-Type' => 'application/json'],
+                    'body' => (new CustomerSerializer)->serialize($customer),
+                    'debug' => true
+                ]
             )
         );
     }
@@ -51,7 +71,12 @@ Class Customers Extends AbstractModule
         return (new CustomerParser)->parse(
             $this->client->patch(
                 "customer_lists/{$this->getSiteName()}/customers/{$customer->getCustomerNo()}",
-                ['json' => (new CustomerSerializer)->serialize($customer)]
+                [
+                    //'json' => (new CustomerSerializer)->serialize($customer)
+                    'headers' => ['Content-Type' => 'application/json'],
+                    'body' => (new CustomerSerializer)->serialize($customer),
+                    'debug' => true
+                ]
             )
         );
     }
@@ -65,25 +90,28 @@ Class Customers Extends AbstractModule
      */
     public function search(string $fieldName, string $searchPhrase)
     {
-        $data = $this->client->post("customer_lists/{$this->getSiteName()}/customer_search", [
-            'json' => ['query' =>
-                [
-                    'text_query' => [
-                        'fields' => [$fieldName],
-                        'search_phrase' => $searchPhrase
-                    ]
+        $query = ['query' =>
+            [
+                'text_query' => [
+                    'fields' => [$fieldName],
+                    'search_phrase' => $searchPhrase
                 ]
             ]
-        ]);
+        ];
+
+        $data = $this->client->post("customer_lists/{$this->getSiteName()}/customer_search",
+            [
+                'headers' => ['Content-Type' => 'application/json'],
+                'body' => json_encode($query),
+                'debug' => true
+            ]);
 
         $collection = new Collection;
 
         if($data->count == 0) return $collection;
 
         foreach($data->hits as $item){
-            $collection->push(
-                (new CustomerParser)->parse($item)
-            );
+            $collection->push($item->data->customer_no);
         }
 
         return $collection;

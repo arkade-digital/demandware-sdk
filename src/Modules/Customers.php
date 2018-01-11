@@ -2,7 +2,9 @@
 
 namespace Arkade\Demandware\Modules;
 
+use Arkade\Demandware\Entities\Customer;
 use Arkade\Demandware\Parsers\CustomerParser;
+use Arkade\Demandware\Serializers\CustomerSerializer;
 use Illuminate\Support\Collection;
 
 Class Customers Extends AbstractModule
@@ -27,12 +29,12 @@ Class Customers Extends AbstractModule
      *
      * PUT https://hostname:port/dw/data/v17_8/customer_lists/{list_id}/customers/{customer_no}
      */
-    public function create(array $customerData)
+    public function create(Customer $customer)
     {
         return (new CustomerParser)->parse(
             $this->client->post(
                 "customer_lists/{$this->getSiteName()}/customers",
-                ['json' => $customerData]
+                ['json' => (new CustomerSerializer)->serialize($customer)]
             )
         );
     }
@@ -44,12 +46,12 @@ Class Customers Extends AbstractModule
      *
      * PATCH https://hostname:port/dw/data/v17_8/customer_lists/{list_id}/customers/{customer_no}
      */
-    public function update(string $customerNo, array $customerData)
+    public function update(Customer $customer)
     {
         return (new CustomerParser)->parse(
             $this->client->patch(
-                "customer_lists/{$this->getSiteName()}/customers/{$customerNo}",
-                ['json' => $customerData]
+                "customer_lists/{$this->getSiteName()}/customers/{$customer->getCustomerNo()}",
+                ['json' => (new CustomerSerializer)->serialize($customer)]
             )
         );
     }

@@ -3,13 +3,14 @@
 namespace Arkade\Demandware\Modules;
 
 use Arkade\Demandware\Parsers\CustomerParser;
+use Illuminate\Support\Collection;
 
 Class Customers Extends AbstractModule
 {
 
     /**
      * @param $id
-     * @return \Psr\Http\Message\ResponseInterface
+     * @return Customer
      */
     public function getFromId($id)
     {
@@ -22,7 +23,7 @@ Class Customers Extends AbstractModule
 
     /**
      * @param array $customerData
-     * @return \Psr\Http\Message\ResponseInterface
+     * @return Customer
      *
      * PUT https://hostname:port/dw/data/v17_8/customer_lists/{list_id}/customers/{customer_no}
      */
@@ -39,7 +40,7 @@ Class Customers Extends AbstractModule
     /**
      * @param int $customerNo
      * @param array $customerData
-     * @return \Psr\Http\Message\ResponseInterface
+     * @return Customer
      *
      * PATCH https://hostname:port/dw/data/v17_8/customer_lists/{list_id}/customers/{customer_no}
      */
@@ -54,15 +55,23 @@ Class Customers Extends AbstractModule
     }
 
     /**
-     * @param array $searchQuery
-     * @return \Psr\Http\Message\ResponseInterface
+     * @param string $fieldName
+     * @param string $searchPhrase
+     * @return Collection
      *
      * POST https://hostname:port/dw/data/v17_8/customer_lists/{customer_list_id}/customer_search
      */
-    public function search(array $searchQuery)
+    public function search(string $fieldName, string $searchPhrase)
     {
         $data = $this->client->post("customer_lists/{$this->getSiteName()}/customer_search", [
-            'json' => ['query' => $searchQuery]
+            'json' => ['query' =>
+                [
+                    'text_query' => [
+                        'fields' => [$fieldName],
+                        'search_phrase' => $searchPhrase
+                    ]
+                ]
+            ]
         ]);
 
         $collection = new Collection;

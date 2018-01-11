@@ -15,9 +15,6 @@ class CustomerParser
      */
     public function parse($payload)
     {
-
-        dump($payload);
-
         $customer = (new Entities\Customer)
             ->setCreationDate(Carbon::parse((string) $payload->creation_date))
             ->setLastModified(Carbon::parse((string) $payload->last_modified))

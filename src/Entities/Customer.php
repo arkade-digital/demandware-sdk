@@ -92,6 +92,11 @@ class Customer extends AbstractEntity
     protected $primaryAddress;
 
     /**
+     * @var LoyaltyCartridge
+     */
+    protected $loyaltyCartridge;
+
+    /**
      * @var Carbon
      */
     protected $creationDate;
@@ -424,6 +429,24 @@ class Customer extends AbstractEntity
     public function setPrimaryAddress(Address $primaryAddress)
     {
         $this->primaryAddress = $primaryAddress;
+        return $this;
+    }
+
+    /**
+     * @return LoyaltyCartridge
+     */
+    public function getLoyaltyCartridge()
+    {
+        return $this->loyaltyCartridge;
+    }
+
+    /**
+     * @param LoyaltyCartridge $loyaltyCartridge
+     * @return Customer
+     */
+    public function setLoyaltyCartridge($loyaltyCartridge)
+    {
+        $this->loyaltyCartridge = $loyaltyCartridge;
         return $this;
     }
 

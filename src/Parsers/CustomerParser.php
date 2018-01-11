@@ -97,6 +97,12 @@ class CustomerParser
             );
         }
 
+        if(!empty($payload->c_omneoMemberID)){
+            $customer->setLoyaltyCartridge(
+                (new LoyaltyCartridgeParser)->parse($payload)
+            );
+        }
+
         return $customer;
     }
 }

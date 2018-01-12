@@ -19,11 +19,6 @@ class Customer extends AbstractEntity
     /**
      * @var string
      */
-    protected $id;
-
-    /**
-     * @var string
-     */
     protected $firstName;
 
     /**
@@ -159,24 +154,6 @@ class Customer extends AbstractEntity
     public function setCustomerNo($customerNo)
     {
         $this->customerNo = $customerNo;
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    /**
-     * @param string $id
-     * @return Customer
-     */
-    public function setId($id)
-    {
-        $this->id = $id;
         return $this;
     }
 

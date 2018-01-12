@@ -52,10 +52,20 @@ class CustomerSerializer
             $serialized['primary_address'] = array_filter($primaryAddress);
         }
 
-        // remove id field
-        unset($serialized['id']);
+        // append loyalty cartridge fields
+        if(isset($serialized['loyalty_cartridge'])){
+            $vars = get_object_vars($serialized['loyalty_cartridge']);
+            $loyaltyCartridge = [];
+            foreach ($vars as $key => $value){
+                $loyaltyCartridge['c_' . $key] = $value;
+            }
 
-        dump($serialized);
+            $loyaltyCartridge = array_filter($loyaltyCartridge);
+
+            unset($serialized['loyalty_cartridge']);
+
+            $serialized = array_merge($serialized, $loyaltyCartridge);
+        }
 
         return json_encode($serialized);
     }

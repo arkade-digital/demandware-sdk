@@ -50,7 +50,6 @@ Class Customers Extends AbstractModule
             $this->client->post(
                 "customer_lists/{$this->getSiteName()}/customers",
                 [
-                    //'json' => (new CustomerSerializer)->serialize($customer)
                     'headers' => ['Content-Type' => 'application/json'],
                     'body' => (new CustomerSerializer)->serialize($customer),
                     'debug' => true
@@ -72,7 +71,6 @@ Class Customers Extends AbstractModule
             $this->client->patch(
                 "customer_lists/{$this->getSiteName()}/customers/{$customer->getCustomerNo()}",
                 [
-                    //'json' => (new CustomerSerializer)->serialize($customer)
                     'headers' => ['Content-Type' => 'application/json'],
                     'body' => (new CustomerSerializer)->serialize($customer),
                     'debug' => true

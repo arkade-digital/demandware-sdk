@@ -2,6 +2,8 @@
 
 namespace Arkade\Demandware\Entities;
 
+use Carbon\Carbon;
+
 class LoyaltyCartridge extends AbstractEntity
 {
     /**

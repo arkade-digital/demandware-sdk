@@ -256,7 +256,7 @@ class Authentication
     public function createPasswordCredentialsToken()
     {
 
-        $authorization_token = base64_encode($this->getUsername() . ':' . $this->getPassword());
+        $authorization_token = base64_encode($this->getClientId() . ':' . $this->getClientSecret());
 
         $params = [
             'headers' => [ 'Authorization' => 'Basic '. $authorization_token],
@@ -281,7 +281,7 @@ class Authentication
      *
      * @return mixed
      */
-    public function getUsername()
+    public function getClientId()
     {
         return $this->username;
     }
@@ -292,7 +292,7 @@ class Authentication
      * @param $username
      * @return $this
      */
-    public function setUsername($username)
+    public function setClientId($username)
     {
         $this->username = $username;
 
@@ -304,7 +304,7 @@ class Authentication
      *
      * @return string
      */
-    public function getPassword()
+    public function getClientSecret()
     {
         return $this->password;
     }
@@ -315,7 +315,7 @@ class Authentication
      * @param $password
      * @return $this
      */
-    public function setPassword($password)
+    public function setClientSecret($password)
     {
         $this->password = $password;
 

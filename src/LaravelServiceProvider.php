@@ -21,8 +21,8 @@ class LaravelServiceProvider extends ServiceProvider
                 ->setApiVersion(config('services.demandware.version'))
                 ->setAuthUrl(config('services.demandware.authUrl'))
                 ->setSiteName(config('services.demandware.siteName'))
-                ->setUsername(config('services.demandware.clientId'))
-                ->setPassword(config('services.demandware.clientSecret'))
+                ->setClientId(config('services.demandware.clientId'))
+                ->setClientSecret(config('services.demandware.clientSecret'))
                 ->setEndpoint(config('services.demandware.endpoint'));
         });
 

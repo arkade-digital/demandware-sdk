@@ -4,6 +4,7 @@ namespace Arkade\Demandware;
 
 use Psr\Http;
 use GuzzleHttp;
+use GuzzleHttp\Middleware;
 use Arkade\Demandware;
 
 class Client
@@ -51,18 +52,18 @@ class Client
      */
     public function request($method, $endpoint, array $params = [])
     {
-        $headers = [
-            'headers' => [
-                'Authorization' => 'Bearer ' . $this->auth->getToken(),
-            ],
-        ];
+        $clientHandler = $this->client->getConfig('handler');
+        $oauthMiddleware = Middleware::mapRequest(function ($request) {
+            return $request->withHeader('Authorization','Bearer ' . $this->auth->getToken());
+        });
+        $params['handler'] = $oauthMiddleware($clientHandler);
 
 
         try {
             $response = $this->client->request(
                 $method,
                 $this->auth->getEndpoint() . $endpoint,
-                array_merge($headers, $params)
+                $params
             );
         } catch (GuzzleHttp\Exception\BadResponseException $e) {
             throw new Exceptions\UnexpectedException((string) $e->getResponse()->getBody(), $e->getResponse()->getStatusCode());

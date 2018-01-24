@@ -4,6 +4,7 @@ namespace Arkade\Demandware\Modules;
 
 use Arkade\Demandware\Entities\Customer;
 use Arkade\Demandware\Parsers\CustomerParser;
+use Arkade\Demandware\Serializers\AddressSerializer;
 use Arkade\Demandware\Serializers\CustomerSerializer;
 use Illuminate\Support\Collection;
 
@@ -42,20 +43,37 @@ Class Customers Extends AbstractModule
      * @param array $customerData
      * @return Customer
      *
-     * PUT https://hostname:port/dw/data/v17_8/customer_lists/{list_id}/customers/{customer_no}
+     * PUT  https://hostname:port/dw/data/v17_8/customer_lists/{list_id}/customers/{customer_no}
+     * POST https://hostname:port/dw/data/v18_1/customer_lists/{list_id}/customers/{customer_no}/addresses
      */
     public function create(Customer $customer)
     {
-        return (new CustomerParser)->parse(
+
+        $customerResponse = (new CustomerParser)->parse(
             $this->client->post(
                 "customer_lists/{$this->getSiteName()}/customers",
                 [
                     'headers' => ['Content-Type' => 'application/json'],
                     'body' => (new CustomerSerializer)->serialize($customer),
-                    'debug' => true
+                    'debug' => env('HTTP_DEBUG', false)
                 ]
             )
         );
+
+        $customerNo = $customerResponse->getCustomerNo();
+        if($customer->getPrimaryAddress())
+        {
+            $this->client->post(
+                "customer_lists/{$this->getSiteName()}/customers/{$customerNo}/addresses",
+                [
+                    'headers' => ['Content-Type' => 'application/json'],
+                    'body' => (new AddressSerializer)->serialize($customer->getPrimaryAddress()),
+                    'debug' => env('HTTP_DEBUG', false)
+                ]
+            );
+        }
+
+        return $this->findById($customerNo);
     }
 
     /**
@@ -73,7 +91,7 @@ Class Customers Extends AbstractModule
                 [
                     'headers' => ['Content-Type' => 'application/json'],
                     'body' => (new CustomerSerializer)->serialize($customer),
-                    'debug' => true
+                    'debug' => env('HTTP_DEBUG', false)
                 ]
             )
         );
@@ -101,7 +119,7 @@ Class Customers Extends AbstractModule
             [
                 'headers' => ['Content-Type' => 'application/json'],
                 'body' => json_encode($query),
-                'debug' => true
+                'debug' => env('HTTP_DEBUG', false)
             ]);
 
         $collection = new Collection;

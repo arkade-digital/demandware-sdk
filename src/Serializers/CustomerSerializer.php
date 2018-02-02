@@ -3,6 +3,7 @@
 namespace Arkade\Demandware\Serializers;
 
 use Arkade\Demandware\Entities;
+use Carbon\Carbon;
 
 class CustomerSerializer
 {
@@ -27,7 +28,16 @@ class CustomerSerializer
         // strip null value items
         $serialized = array_filter($serialized);
 
-        // convert credentials fields to snake case
+        if(isset($serialized['creation_date'])){
+            unset($serialized['creation_date']);
+//            $serialized['creation_date'] = (Carbon::parse($serialized['creation_date']->date))->toDateString();
+        }
+
+        if(isset($serialized['last_modified'])){
+            unset($serialized['last_modified']);
+//            $serialized['last_modified'] = (Carbon::parse($serialized['last_modified']->date))->toDateString();
+        }
+
         if(isset($serialized['credentials'])){
             $vars = get_object_vars($serialized['credentials']);
             $credentials = [];

@@ -54,6 +54,7 @@ class Client
     {
         $clientHandler = $this->client->getConfig('handler');
         $oauthMiddleware = Middleware::mapRequest(function ($request) {
+
             return $request->withHeader('Authorization','Bearer ' . $this->auth->getToken());
         });
         $params['handler'] = $oauthMiddleware($clientHandler);
@@ -78,6 +79,7 @@ class Client
      * @param $endpoint
      * @param array $params
      * @return Http\Message\ResponseInterface
+     * @throws Exceptions\UnexpectedException
      */
     public function patch($endpoint, array $params = [])
     {
@@ -90,6 +92,7 @@ class Client
      * @param $endpoint
      * @param array $params
      * @return Http\Message\ResponseInterface
+     * @throws Exceptions\UnexpectedException
      */
     public function post($endpoint, array $params = [])
     {
@@ -102,6 +105,7 @@ class Client
      * @param $endpoint
      * @param array $params
      * @return Http\Message\ResponseInterface
+     * @throws Exceptions\UnexpectedException
      */
     public function get($endpoint, array $params = [])
     {
@@ -114,6 +118,7 @@ class Client
      * @param $endpoint
      * @param array $params
      * @return Http\Message\ResponseInterface
+     * @throws Exceptions\UnexpectedException
      */
     public function delete($endpoint, array $params = [])
     {
@@ -123,7 +128,7 @@ class Client
     /**
      * Profile extension module.
      *
-     * @return Modules\ProfileExtension
+     * @return Modules\Customers
      */
     public function customers()
     {

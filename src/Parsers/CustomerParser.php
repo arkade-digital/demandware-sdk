@@ -2,6 +2,7 @@
 
 namespace Arkade\Demandware\Parsers;
 
+use Arkade\Demandware\Entities\Customer;
 use Carbon\Carbon;
 use Arkade\Demandware\Entities;
 
@@ -10,7 +11,7 @@ class CustomerParser
     /**
      * Parse the given array to a Customer entity.
      *
-     * @param  array $payload
+     * @param $payload
      * @return Customer
      */
     public function parse($payload)

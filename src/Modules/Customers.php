@@ -77,11 +77,11 @@ Class Customers Extends AbstractModule
     }
 
     /**
-     * @param int $customerNo
-     * @param array $customerData
-     * @return Customer
+     * @param Customer $customer
+     * @return \Arkade\Demandware\Entities\Customer
      *
      * PATCH https://hostname:port/dw/data/v17_8/customer_lists/{list_id}/customers/{customer_no}
+     * @throws \Arkade\Demandware\Exceptions\UnexpectedException
      */
     public function update(Customer $customer)
     {

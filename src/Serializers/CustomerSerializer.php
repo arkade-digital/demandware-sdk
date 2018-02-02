@@ -30,12 +30,10 @@ class CustomerSerializer
 
         if(isset($serialized['creation_date'])){
             unset($serialized['creation_date']);
-//            $serialized['creation_date'] = (Carbon::parse($serialized['creation_date']->date))->toDateString();
         }
 
         if(isset($serialized['last_modified'])){
             unset($serialized['last_modified']);
-//            $serialized['last_modified'] = (Carbon::parse($serialized['last_modified']->date))->toDateString();
         }
 
         if(isset($serialized['credentials'])){

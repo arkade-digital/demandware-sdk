@@ -26,7 +26,7 @@ Class Customers Extends AbstractModule
 
     /**
      * @param $email
-     * @return Customer|false
+     * @return Customer|null
      */
     public function findByEmail($email)
     {
@@ -36,7 +36,7 @@ Class Customers Extends AbstractModule
             return $this->findById($data->first());
         }
 
-        return false;
+        return null;
     }
 
     /**

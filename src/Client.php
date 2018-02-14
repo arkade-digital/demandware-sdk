@@ -25,6 +25,13 @@ class Client
     protected $source;
 
     /**
+     * Endpoint.
+     *
+     * @var string
+     */
+    protected $endpoint;
+
+    /**
      * Client constructor.
      *
      * @param Authentication $auth
@@ -39,7 +46,28 @@ class Client
         ]);
     }
 
+    /**
+     * Set the endpoint.
+     *
+     * @param string $url
+     * @return $this
+     */
+    public function setEndpoint($url)
+    {
+        $this->endpoint = $url;
 
+        return $this;
+    }
+
+    /**
+     * Get the endpoint.
+     *
+     * @return string
+     */
+    public function getEndpoint()
+    {
+        return $this->endpoint;
+    }
 
     /**
      * Make a request.
@@ -53,24 +81,60 @@ class Client
     public function request($method, $endpoint, array $params = [])
     {
         $clientHandler = $this->client->getConfig('handler');
-        $oauthMiddleware = Middleware::mapRequest(function ($request) {
 
-            return $request->withHeader('Authorization','Bearer ' . $this->auth->getToken());
-        });
-        $params['handler'] = $oauthMiddleware($clientHandler);
-
+        if (!array_has($params, 'headers.Authorization')) {
+            $oauthMiddleware   = Middleware::mapRequest(function ($request) {
+                /** @var GuzzleHttp\Psr7\Request $request */
+                return $request->withHeader('Authorization', 'Bearer ' . $this->auth->getToken());
+            });
+            $params['handler'] = $oauthMiddleware($clientHandler);
+        }
 
         try {
             $response = $this->client->request(
                 $method,
-                $this->auth->getEndpoint() . $endpoint,
+                $this->getEndpoint() . $endpoint,
                 $params
             );
         } catch (GuzzleHttp\Exception\BadResponseException $e) {
-            throw new Exceptions\UnexpectedException((string) $e->getResponse()->getBody(), $e->getResponse()->getStatusCode());
+            throw new Exceptions\UnexpectedException((string)$e->getResponse()->getBody(),
+                $e->getResponse()->getStatusCode());
         }
 
-        return json_decode((string) $response->getBody());
+        return json_decode((string)$response->getBody());
+    }
+
+    /**
+     * Make a request to return customer JWT Authorization bearer.
+     *
+     * @internal Needs an endpoint as the site name might be different use the useShop function on the
+     * AbstractModule class.
+     *
+     * @return string
+     * @throws Exceptions\UnexpectedException
+     */
+    public function getCustomerAuth($endpoint)
+    {
+        $params['headers'] = [
+            'Content-Type'  => 'application/json',
+            'Authorization' => 'Bearer ' . $this->auth->getToken()
+        ];
+
+        $params['body'] = json_encode([
+            'type' => 'guest'
+        ]);
+
+        try {
+            $response = $this->client->request(
+                'POST',
+                $this->getEndpoint() . $endpoint,
+                $params
+            );
+        } catch (GuzzleHttp\Exception\BadResponseException $e) {
+            throw new Exceptions\UnexpectedException((string)$e->getResponse()->getBody(),
+                $e->getMessage());
+        }
+        return $response->getHeader('Authorization') ?: '';
     }
 
     /**

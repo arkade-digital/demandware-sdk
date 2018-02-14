@@ -22,6 +22,13 @@ class Authentication
     protected $apiVersion;
 
     /**
+     * Site name.
+     *
+     * @var string
+     */
+    protected $siteName;
+
+    /**
      * Auth URL.
      *
      * @var string
@@ -41,13 +48,6 @@ class Authentication
      * @var string
      */
     protected $password;
-
-    /**
-     * Endpoint.
-     *
-     * @var string
-     */
-    protected $endpoint;
 
     /**
      * Token.
@@ -101,14 +101,22 @@ class Authentication
     /**
      * Set the Site Name (Client List ID).
      *
-     * @param string $apiVersion
+     * @param string $siteName
      * @return $this
      */
-    public function setSiteName($apiVersion)
+    public function setSiteName($siteName)
     {
-        $this->siteName = $apiVersion;
+        $this->siteName = $siteName;
 
         return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSiteName()
+    {
+        return $this->siteName;
     }
 
     /**
@@ -132,30 +140,6 @@ class Authentication
     public function getAuthUrl()
     {
         return $this->authUrl;
-    }
-
-    /**
-     * Set the endpoint.
-     *
-     * @param string $url
-     * @return $this
-     */
-    public function setEndpoint($url)
-    {
-        $this->endpoint = $url;
-
-        return $this;
-    }
-
-    /**
-     * Get the endpoint.
-     *
-     * @return string
-     */
-    public function getEndpoint()
-    {
-
-        return sprintf('%s/s/-/dw/data/v%s/', $this->endpoint, $this->getApiVersion());
     }
 
     /**

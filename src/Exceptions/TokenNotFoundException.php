@@ -4,6 +4,6 @@ namespace Arkade\Demandware\Exceptions;
 
 use Exception;
 
-class UnexpectedException extends Exception
+class TokenNotFoundException extends Exception
 {
 }

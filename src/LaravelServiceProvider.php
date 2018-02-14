@@ -22,13 +22,13 @@ class LaravelServiceProvider extends ServiceProvider
                 ->setAuthUrl(config('services.demandware.authUrl'))
                 ->setSiteName(config('services.demandware.siteName'))
                 ->setClientId(config('services.demandware.clientId'))
-                ->setClientSecret(config('services.demandware.clientSecret'))
-                ->setEndpoint(config('services.demandware.endpoint'));
+                ->setClientSecret(config('services.demandware.clientSecret'));
         });
 
         // Setup the client.
         $this->app->singleton(Demandware\Client::class, function () {
-            return (new Demandware\Client(resolve(Demandware\Authentication::class)));
+            return (new Demandware\Client(resolve(Demandware\Authentication::class)))
+                ->setEndpoint(config('services.demandware.endpoint'));
         });
     }
 }

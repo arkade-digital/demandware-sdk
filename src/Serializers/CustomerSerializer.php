@@ -29,13 +29,12 @@ class CustomerSerializer
         // strip null value items
         $serialized = array_filter($serialized);
 
-        if (isset($serialized['creation_date'])) {
-            unset($serialized['creation_date']);
-        }
-
-        if (isset($serialized['last_modified'])) {
-            unset($serialized['last_modified']);
-        }
+        if (isset($serialized['creation_date'])) unset($serialized['creation_date']);
+        if (isset($serialized['last_modified'])) unset($serialized['last_modified']);
+        if (isset($serialized['last_login_time'])) unset($serialized['last_login_time']);
+        if (isset($serialized['last_visit_time'])) unset($serialized['last_visit_time']);
+        if (isset($serialized['previous_login_time'])) unset($serialized['previous_login_time']);
+        if (isset($serialized['previous_visit_time'])) unset($serialized['previous_visit_time']);
 
         if (isset($serialized['credentials'])) {
             $credentials = [];

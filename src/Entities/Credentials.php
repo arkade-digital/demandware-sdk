@@ -22,6 +22,11 @@ class Credentials extends AbstractEntity
     /**
      * @var string
      */
+    protected $password;
+
+    /**
+     * @var string
+     */
     protected $passwordQuestion;
 
     /**
@@ -96,6 +101,23 @@ class Credentials extends AbstractEntity
         return $this;
     }
 
+    /**
+     * @return string
+     */
+    public function getPassword()
+    {
+        return $this->password;
+    }
+
+    /**
+     * @param string $password
+     * @return Credentials
+     */
+    public function setPassword(string $password)
+    {
+        $this->password = $password;
+        return $this;
+    }
 
 
 }

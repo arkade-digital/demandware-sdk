@@ -101,7 +101,7 @@ Class Customers Extends AbstractModule
     {
         return (new CustomerParser)->parse(
             $this->client->patch(
-                "customer_lists/{$this->getSiteName()}/customers/{$customer->getCustomerNo()}",
+                $this->useData("customer_lists/{$this->getSiteName()}/customers/{$customer->getCustomerNo()}"),
                 [
                     'headers' => ['Content-Type' => 'application/json'],
                     'body'    => (new CustomerSerializer)->serialize($customer),
@@ -117,6 +117,7 @@ Class Customers Extends AbstractModule
      * @return Collection
      *
      * POST https://hostname:port/dw/data/v17_8/customer_lists/{customer_list_id}/customer_search
+     * @throws \Arkade\Demandware\Exceptions\UnexpectedException
      */
     public function search(string $fieldName, string $searchPhrase)
     {
@@ -130,7 +131,8 @@ Class Customers Extends AbstractModule
                 ]
         ];
 
-        $data = $this->client->post("customer_lists/{$this->getSiteName()}/customer_search",
+        $data = $this->client->post(
+            $this->useData("customer_lists/{$this->getSiteName()}/customer_search"),
             [
                 'headers' => ['Content-Type' => 'application/json'],
                 'body'    => json_encode($query),

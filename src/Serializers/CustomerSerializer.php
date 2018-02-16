@@ -38,8 +38,8 @@ class CustomerSerializer
         }
 
         if (isset($serialized['credentials'])) {
-            $vars        = get_object_vars($serialized['credentials']);
             $credentials = [];
+            $vars        = get_object_vars($serialized['credentials']);
             foreach ($vars as $key => $value) {
                 $credentials[snake_case($key)] = $value;
             }
@@ -76,16 +76,19 @@ class CustomerSerializer
             $serialized = array_merge($serialized, $loyaltyCartridge);
         }
 
+        if (array_has($serialized, 'credentials.password')) {
+            $password = $serialized['credentials']['password'];
+            unset($serialized['credentials']['password']);
+        }
+
         if ($isNew) {
             $serialized['login'] = $serialized['email'];
-            unset($serialized['credentials']);
-            unset($serialized['primary_address']);
-            unset($serialized['primary_address']);
 
-            $customer   = $serialized;
+            unset($serialized['credentials'], $serialized['primary_address']);
+
             $serialized = [
-                'password' => 'testpass',
-                'customer' => $customer,
+                'password' => !empty($password) ? $password : '',
+                'customer' => $serialized,
             ];
         }
 

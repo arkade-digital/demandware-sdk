@@ -43,7 +43,7 @@ class LaravelServiceProvider extends ServiceProvider
      * @param  Client $client
      * @return Client
      */
-    protected function setupRecorder(RestClient $client)
+    protected function setupRecorder(Client $client)
     {
         if (! $this->app->bound('Omneo\Plugins\HttpRecorder\Recorder')) {
             return $client;

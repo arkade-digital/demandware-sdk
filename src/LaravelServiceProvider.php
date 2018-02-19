@@ -33,7 +33,7 @@ class LaravelServiceProvider extends ServiceProvider
 
             $this->setupRecorder($client);
 
-            return $client->setupClient();
+            return $client;
         });
     }
 

@@ -2,6 +2,7 @@
 
 namespace Arkade\Demandware;
 
+use GuzzleHttp;
 use Arkade\Demandware;
 use Illuminate\Support\ServiceProvider;
 
@@ -27,8 +28,35 @@ class LaravelServiceProvider extends ServiceProvider
 
         // Setup the client.
         $this->app->singleton(Demandware\Client::class, function () {
-            return (new Demandware\Client(resolve(Demandware\Authentication::class)))
+            $client = (new Demandware\Client(resolve(Demandware\Authentication::class)))
                 ->setEndpoint(config('services.demandware.endpoint'));
+
+            $this->setupRecorder($client);
+
+            return $client->setupClient();
         });
+    }
+
+    /**
+     * Setup recorder middleware if the HttpRecorder package is bound.
+     *
+     * @param  Client $client
+     * @return Client
+     */
+    protected function setupRecorder(Client $client)
+    {
+        if (! $this->app->bound('Arkade\HttpRecorder\Integrations\Guzzle\MiddlewareFactory')) {
+            return $client;
+        }
+
+        $stack = GuzzleHttp\HandlerStack::create();
+
+        $stack->push(
+            $this->app
+                ->make('Arkade\HttpRecorder\Integrations\Guzzle\MiddlewareFactory')
+                ->make(['apparel21', 'outgoing'])
+        );
+
+        return $client->setupClient($stack);
     }
 }

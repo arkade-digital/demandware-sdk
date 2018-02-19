@@ -43,9 +43,9 @@ class LaravelServiceProvider extends ServiceProvider
      * @param  Client $client
      * @return Client
      */
-    protected function setupRecorder(Client $client)
+    protected function setupRecorder(RestClient $client)
     {
-        if (! $this->app->bound('Arkade\HttpRecorder\Integrations\Guzzle\MiddlewareFactory')) {
+        if (! $this->app->bound('Omneo\Plugins\HttpRecorder\Recorder')) {
             return $client;
         }
 
@@ -53,8 +53,8 @@ class LaravelServiceProvider extends ServiceProvider
 
         $stack->push(
             $this->app
-                ->make('Arkade\HttpRecorder\Integrations\Guzzle\MiddlewareFactory')
-                ->make(['apparel21', 'outgoing'])
+                ->make('Omneo\Plugins\HttpRecorder\GuzzleIntegration')
+                ->getMiddleware(['demandware', 'outgoing'])
         );
 
         return $client->setupClient($stack);

@@ -73,6 +73,14 @@ class CustomerSerializer
             unset($serialized['loyalty_cartridge']);
 
             $serialized = array_merge($serialized, $loyaltyCartridge);
+
+            if(isset($serialized['c_currentTierMaintainDeadline'])){
+                $serialized['c_currentTierMaintainDeadline'] = (new Carbon($serialized['c_currentTierMaintainDeadline']->date))->toDateString();
+            }
+
+            if(isset($serialized['c_nextTierMaintainDeadline'])){
+                $serialized['c_nextTierMaintainDeadline'] = (new Carbon($serialized['c_nextTierMaintainDeadline']->date))->toDateString();
+            }
         }
 
         if (array_has($serialized, 'credentials.password')) {

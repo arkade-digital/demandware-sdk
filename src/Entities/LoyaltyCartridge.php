@@ -7,7 +7,7 @@ use Carbon\Carbon;
 class LoyaltyCartridge extends AbstractEntity
 {
     /**
-     * @var float
+     * @var int
      */
     protected $currentRewardBalance;
 
@@ -67,7 +67,7 @@ class LoyaltyCartridge extends AbstractEntity
     protected $spendRequired;
 
     /**
-     * @return float
+     * @return int
      */
     public function getCurrentRewardBalance()
     {

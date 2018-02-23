@@ -66,7 +66,6 @@ Class Customers Extends AbstractModule
                 $this->useShop('/customers'),
                 [
                     'body'    => (new CustomerSerializer)->serialize($customer, true),
-                    'debug'   => env('HTTP_DEBUG', false),
                     'headers' => [
                         'Content-Type'  => 'application/json',
                         'Authorization' => $jwt
@@ -82,7 +81,6 @@ Class Customers Extends AbstractModule
                 [
                     'headers' => ['Content-Type' => 'application/json'],
                     'body'    => (new AddressSerializer)->serialize($customer->getPrimaryAddress()),
-                    'debug'   => env('HTTP_DEBUG', false)
                 ]
             );
         }
@@ -105,7 +103,6 @@ Class Customers Extends AbstractModule
                 [
                     'headers' => ['Content-Type' => 'application/json'],
                     'body'    => (new CustomerSerializer)->serialize($customer),
-                    'debug'   => env('HTTP_DEBUG', false)
                 ]
             )
         );
@@ -136,7 +133,6 @@ Class Customers Extends AbstractModule
             [
                 'headers' => ['Content-Type' => 'application/json'],
                 'body'    => json_encode($query),
-                'debug'   => env('HTTP_DEBUG', false)
             ]);
 
         $collection = new Collection;

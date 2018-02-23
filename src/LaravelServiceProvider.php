@@ -29,7 +29,8 @@ class LaravelServiceProvider extends ServiceProvider
         // Setup the client.
         $this->app->singleton(Demandware\Client::class, function () {
             $client = (new Demandware\Client(resolve(Demandware\Authentication::class)))
-                ->setEndpoint(config('services.demandware.endpoint'));
+                ->setEndpoint(config('services.demandware.endpoint'))
+                ->setVerifyPeer(config('app.env') === 'production');
 
             $this->setupRecorder($client);
 

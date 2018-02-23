@@ -152,7 +152,6 @@ class Authentication
         if ($this->token) return $this->isTokenExpired() ? $this->refreshPasswordCredentialsToken() : $this->token;
 
         return $this->createPasswordCredentialsToken();
-
     }
 
     /**

@@ -5,6 +5,8 @@ namespace Arkade\Demandware;
 use Psr\Http;
 use GuzzleHttp;
 use GuzzleHttp\Middleware;
+use GuzzleHttp\MessageFormatter;
+use Psr\Log\LoggerInterface;
 use Arkade\Demandware;
 
 class Client
@@ -30,6 +32,20 @@ class Client
      * @var string
      */
     protected $endpoint;
+
+    /**
+     * Enable logging of guzzle requests / responses
+     *
+     * @var bool
+     */
+    protected $logging = false;
+
+    /**
+     * PSR-3 logger
+     *
+     * @var LoggerInterface
+     */
+    protected $logger;
 
     /**
      * Verify peer SSL
@@ -59,6 +75,16 @@ class Client
     }
 
     /**
+     * Get the endpoint.
+     *
+     * @return string
+     */
+    public function getEndpoint()
+    {
+        return $this->endpoint;
+    }
+
+    /**
      * Set the endpoint.
      *
      * @param string $url
@@ -72,13 +98,39 @@ class Client
     }
 
     /**
-     * Get the endpoint.
-     *
-     * @return string
+     * @return bool
      */
-    public function getEndpoint()
+    public function getLogging()
     {
-        return $this->endpoint;
+        return $this->logging;
+    }
+
+    /**
+     * @param bool $logging
+     * @return Client
+     */
+    public function setLogging($logging)
+    {
+        $this->logging = $logging;
+        return $this;
+    }
+
+    /**
+     * @return LoggerInterface
+     */
+    public function getLogger()
+    {
+        return $this->logger;
+    }
+
+    /**
+     * @param LoggerInterface $logger
+     * @return Client
+     */
+    public function setLogger($logger)
+    {
+        $this->logger = $logger;
+        return $this;
     }
 
     /**
@@ -127,6 +179,8 @@ class Client
     public function setupClient(GuzzleHttp\HandlerStack $stack = null, $options = [])
     {
         $stack = $stack ?: GuzzleHttp\HandlerStack::create();
+
+        if($this->logging) $this->bindLoggingMiddleware($stack);
 
         $this->client = new GuzzleHttp\Client(array_merge([
             'handler'  => $stack,
@@ -267,5 +321,18 @@ class Client
         return new Modules\Customers($this);
     }
 
+    /**
+     * Bind logging middleware.
+     *
+     * @param  GuzzleHttp\HandlerStack $stack
+     * @return void
+     */
+    protected function bindLoggingMiddleware(GuzzleHttp\HandlerStack $stack)
+    {
+        $stack->push(Middleware::log(
+            $this->logger,
+            new MessageFormatter('{request} - {response}')
+        ));
+    }
 
 }

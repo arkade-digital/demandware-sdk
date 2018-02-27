@@ -4,6 +4,7 @@ namespace Arkade\Demandware;
 
 use GuzzleHttp;
 use Arkade\Demandware;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\ServiceProvider;
 
 class LaravelServiceProvider extends ServiceProvider
@@ -20,17 +21,19 @@ class LaravelServiceProvider extends ServiceProvider
         $this->app->singleton(Demandware\Authentication::class, function(){
             return (new Demandware\Authentication)
                 ->setApiVersion(config('services.demandware.version'))
-                ->setAuthUrl(config('services.demandware.authUrl'))
-                ->setSiteName(config('services.demandware.siteName'))
-                ->setClientId(config('services.demandware.clientId'))
-                ->setClientSecret(config('services.demandware.clientSecret'));
+                ->setAuthUrl(config('services.demandware.auth_url'))
+                ->setSiteName(config('services.demandware.site_name'))
+                ->setClientId(config('services.demandware.client_id'))
+                ->setClientSecret(config('services.demandware.client_secret'));
         });
 
         // Setup the client.
         $this->app->singleton(Demandware\Client::class, function () {
             $client = (new Demandware\Client(resolve(Demandware\Authentication::class)))
                 ->setEndpoint(config('services.demandware.endpoint'))
-                ->setVerifyPeer(config('app.env') === 'production');
+                ->setLogging(config('services.commerceconnect.logging'))
+                ->setVerifyPeer(config('app.env') === 'production')
+                ->setLogger(Log::getMonolog());
 
             $this->setupRecorder($client);
 
@@ -47,7 +50,7 @@ class LaravelServiceProvider extends ServiceProvider
     protected function setupRecorder(Client $client)
     {
         if (! $this->app->bound('Omneo\Plugins\HttpRecorder\Recorder')) {
-            return $client;
+            return $client->setupClient();
         }
 
         $stack = GuzzleHttp\HandlerStack::create();

@@ -43,8 +43,8 @@ class CustomerSerializer
                 $credentials[snake_case($key)] = $value;
             }
 
-//            unset($credentials['locked']);
-//            unset($credentials['enabled']);
+            unset($credentials['locked']);
+            unset($credentials['enabled']);
 
             $serialized['credentials'] = array_filter($credentials);
         }

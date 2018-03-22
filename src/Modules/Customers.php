@@ -97,7 +97,7 @@ Class Customers Extends AbstractModule
      */
     public function update(Customer $customer)
     {
-        return (new CustomerParser)->parse(
+        $customerResponse = (new CustomerParser)->parse(
             $this->client->patch(
                 $this->useData("customer_lists/{$this->getSiteName()}/customers/{$customer->getCustomerNo()}"),
                 [
@@ -106,6 +106,19 @@ Class Customers Extends AbstractModule
                 ]
             )
         );
+
+        $customerNo = $customerResponse->getCustomerNo();
+        if ($customer->getPrimaryAddress()) {
+            $this->client->post(
+                $this->useData("customer_lists/{$this->getSiteName()}/customers/{$customerNo}/addresses"),
+                [
+                    'headers' => ['Content-Type' => 'application/json'],
+                    'body'    => (new AddressSerializer)->serialize($customer->getPrimaryAddress()),
+                ]
+            );
+        }
+
+        return $this->findById($customerNo);
     }
 
     /**

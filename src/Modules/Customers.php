@@ -4,6 +4,7 @@ namespace Arkade\Demandware\Modules;
 
 use Arkade\Demandware\Entities\Customer;
 use Arkade\Demandware\Exceptions\TokenNotFoundException;
+use Arkade\Demandware\Exceptions\UnexpectedException;
 use Arkade\Demandware\Parsers\CustomerParser;
 use Arkade\Demandware\Serializers\AddressSerializer;
 use Arkade\Demandware\Serializers\CustomerSerializer;
@@ -28,7 +29,7 @@ Class Customers Extends AbstractModule
 
     /**
      * @param $email
-     * @return Customer|null
+     * @return Customer
      * @throws \Arkade\Demandware\Exceptions\UnexpectedException
      */
     public function findByEmail($email)
@@ -37,9 +38,9 @@ Class Customers Extends AbstractModule
 
         if (count($data)) {
             return $this->findById($data->first());
+        }else{
+            throw new UnexpectedException('No customers found');
         }
-
-        return null;
     }
 
     /**

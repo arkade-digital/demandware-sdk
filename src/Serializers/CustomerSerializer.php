@@ -43,21 +43,12 @@ class CustomerSerializer
                 $credentials[snake_case($key)] = $value;
             }
 
-//            unset($credentials['locked']);
-//            unset($credentials['enabled']);
-
             $serialized['credentials'] = array_filter($credentials);
         }
 
-        // convert address fields to snake case
+        // primary address in customer is buggy
         if (isset($serialized['primary_address'])) {
-            $vars           = get_object_vars($serialized['primary_address']);
-            $primaryAddress = [];
-            foreach ($vars as $key => $value) {
-                $primaryAddress[snake_case($key)] = $value;
-            }
-
-            $serialized['primary_address'] = array_filter($primaryAddress);
+            unset($serialized['primary_address']);
         }
 
         // append loyalty cartridge fields
@@ -91,7 +82,7 @@ class CustomerSerializer
         if ($isNew) {
             $serialized['login'] = $serialized['email'];
 
-            unset($serialized['credentials'], $serialized['primary_address']);
+            unset($serialized['credentials']);
 
             $serialized = [
                 'password' => !empty($password) ? $password : '',

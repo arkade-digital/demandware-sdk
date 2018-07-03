@@ -322,6 +322,16 @@ class Client
     }
 
     /**
+     * Authentication module.
+     *
+     * @return Modules\Authentication
+     */
+    public function authentication()
+    {
+        return new Modules\Authentication($this);
+    }
+
+    /**
      * Bind logging middleware.
      *
      * @param  GuzzleHttp\HandlerStack $stack

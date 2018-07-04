@@ -324,11 +324,11 @@ class Client
     /**
      * Authentication module.
      *
-     * @return Modules\Authentication
+     * @return Modules\CustomerAuthentication
      */
-    public function authentication()
+    public function customerAuthentication()
     {
-        return new Modules\Authentication($this);
+        return new Modules\CustomerAuthentication($this);
     }
 
     /**

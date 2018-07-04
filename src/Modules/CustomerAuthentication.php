@@ -5,6 +5,7 @@ namespace Arkade\Demandware\Modules;
 use GuzzleHttp;
 use Arkade\Demandware\Entities\Customer;
 use Arkade\Demandware\Exceptions;
+use Arkade\Demandware\Parsers;
 use Illuminate\Support\Collection;
 
 Class CustomerAuthentication Extends AbstractModule
@@ -12,17 +13,19 @@ Class CustomerAuthentication Extends AbstractModule
 
     /**
      * @param Customer $customer
-     * @return Array the session cookies
+     * @return Array
      * @throws \Arkade\Demandware\Exceptions\UnexpectedException
      * @throws \Arkade\Demandware\Exceptions\TokenNotFoundException
      * @throws \Arkade\Demandware\Exceptions\CookiesNotFoundException
      */
     public function authenticate(Customer $customer)
     {
-        $jwt = $this->getCustomerAuth(
+        $response = $this->loginCustomer(
             $this->useShop("/customers/auth?client_id={$this->getClientId()}"),
             $customer
         );
+
+        $jwt = $response->getHeader('Authorization');
 
         if (empty($jwt)) {
             throw new Exceptions\TokenNotFoundException('Customer JWT token could not be found');
@@ -37,20 +40,24 @@ Class CustomerAuthentication Extends AbstractModule
             throw new Exceptions\CookiesNotFoundException('Customer JWT token could not be found');
         }
 
-        return $cookies;
+        $customer = (new Parsers\CustomerParser)->parse(json_decode((string)$response->getBody()));
+
+        $customer->attributes = Collect(['cookies'=>$cookies]);
+
+        return $customer;
     }
 
     /**
-     * Make a request to return customer JWT Authorization bearer using a customers username and password.
+     * Make a request to log the customer in using a customers username and password.
      *
      * @internal Needs an endpoint as the site name might be different use the useShop function on the
      * AbstractModule class.
      * @param Customer $customer
      *
-     * @return string
+     * @return GuzzleHttp\Psr7\Response
      * @throws Exceptions\UnexpectedException
      */
-    protected function getCustomerAuth($endpoint, Customer $customer)
+    protected function loginCustomer($endpoint, Customer $customer)
     {
         $basicAuthentication = base64_encode($customer->getCredentials()->getLogin() . ':' . $customer->getCredentials()->getPassword());
 
@@ -74,7 +81,7 @@ Class CustomerAuthentication Extends AbstractModule
                 $e->getMessage());
         }
 
-        return $response->getHeader('Authorization') ?: '';
+        return $response;
     }
 
     /**

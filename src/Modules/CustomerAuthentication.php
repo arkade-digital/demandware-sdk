@@ -64,7 +64,7 @@ Class CustomerAuthentication Extends AbstractModule
         ]);
 
         try {
-            $response = $this->client->request(
+            $response = $this->client->getClient()->request(
                 'POST',
                 $this->client->getEndpoint() . $endpoint,
                 $params
@@ -73,6 +73,7 @@ Class CustomerAuthentication Extends AbstractModule
             throw new Exceptions\UnexpectedException((string)$e->getResponse()->getBody(),
                 $e->getMessage());
         }
+
         return $response->getHeader('Authorization') ?: '';
     }
 
@@ -86,15 +87,15 @@ Class CustomerAuthentication Extends AbstractModule
      * @return string
      * @throws Exceptions\UnexpectedException
      */
-    protected function getSessionCookies($endpoint, String $jwt)
+    protected function getSessionCookies($endpoint, Array $jwt)
     {
         $params['headers'] = [
             'Content-Type'  => 'application/json',
-            'Authorization' => $jwt
+            'Authorization' => $jwt[0]
         ];
 
         try {
-            $response = $this->client->request(
+            $response = $this->client->getClient()->request(
                 'POST',
                 $this->client->getEndpoint() . $endpoint,
                 $params

@@ -75,6 +75,24 @@ class Client
     }
 
     /**
+     * @return GuzzleHttp\Client
+     */
+    public function getClient()
+    {
+        return $this->client;
+    }
+
+    /**
+     * @param GuzzleHttp\Client $client
+     * @return Client
+     */
+    public function setClient($client)
+    {
+        $this->client = $client;
+        return $this;
+    }
+
+    /**
      * Get the endpoint.
      *
      * @return string

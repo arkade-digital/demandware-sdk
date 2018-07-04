@@ -13,7 +13,7 @@ Class CustomerAuthentication Extends AbstractModule
 
     /**
      * @param Customer $customer
-     * @return Array
+     * @return Customer
      * @throws \Arkade\Demandware\Exceptions\UnexpectedException
      * @throws \Arkade\Demandware\Exceptions\TokenNotFoundException
      * @throws \Arkade\Demandware\Exceptions\CookiesNotFoundException

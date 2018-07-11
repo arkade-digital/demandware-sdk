@@ -78,7 +78,7 @@ Class CustomerAuthentication Extends AbstractModule
             );
         } catch (GuzzleHttp\Exception\BadResponseException $e) {
             throw new Exceptions\UnexpectedException((string)$e->getResponse()->getBody(),
-                $e->getMessage());
+                $e->getResponse()->getStatusCode());
         }
 
         return $response;
@@ -109,7 +109,7 @@ Class CustomerAuthentication Extends AbstractModule
             );
         } catch (GuzzleHttp\Exception\BadResponseException $e) {
             throw new Exceptions\UnexpectedException((string)$e->getResponse()->getBody(),
-                $e->getMessage());
+                $e->getResponse()->getStatusCode());
         }
         return $response->getHeader('Set-Cookie') ?: '';
     }

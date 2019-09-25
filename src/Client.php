@@ -62,6 +62,21 @@ class Client
     protected $timeout = 900;
 
     /**
+     * @var
+     */
+    protected $siteName;
+
+    /**
+     * @var
+     */
+    protected $apiVersion;
+
+    /**
+     * @var
+     */
+    protected $clientId;
+
+    /**
      * Client constructor.
      *
      * @param Authentication $auth
@@ -111,6 +126,75 @@ class Client
     public function setEndpoint($url)
     {
         $this->endpoint = $url;
+
+        return $this;
+    }
+
+    /**
+     * Get the sitename.
+     *
+     * @return string
+     */
+    public function getSitename()
+    {
+        return $this->siteName;
+    }
+
+    /**
+     * Set the sitename.
+     *
+     * @param string $sitename
+     * @return $this
+     */
+    public function setSitename($siteName)
+    {
+        $this->siteName = $siteName;
+
+        return $this;
+    }
+
+    /**
+     * Get the sitename.
+     *
+     * @return string
+     */
+    public function getApiVersion()
+    {
+        return $this->apiVersion;
+    }
+
+    /**
+     * Set the apiVersion.
+     *
+     * @param string $apiVersion
+     * @return $this
+     */
+    public function setApiVersion($apiVersion)
+    {
+        $this->apiVersion = $apiVersion;
+
+        return $this;
+    }
+
+    /**
+     * Get the sitename.
+     *
+     * @return string
+     */
+    public function getClientId()
+    {
+        return $this->clientId;
+    }
+
+    /**
+     * Set the apiVersion.
+     *
+     * @param string $apiVersion
+     * @return $this
+     */
+    public function setClientId($clientId)
+    {
+        $this->clientId = $clientId;
 
         return $this;
     }

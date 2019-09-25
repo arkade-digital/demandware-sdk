@@ -23,17 +23,17 @@ abstract class AbstractModule
 
     public function getSiteName()
     {
-        return env('DW_SITE_NAME');
+        return $this->client->getSiteName();
     }
 
     public function getApiVersion()
     {
-        return env('DW_API_VERSION');
+        return $this->client->getApiVersion();
     }
 
     public function getClientId()
     {
-        return env('DW_CLIENT_ID');
+        return $this->client->getClientID();
     }
 
     /**

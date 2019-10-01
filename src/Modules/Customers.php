@@ -2,17 +2,16 @@
 
 namespace Arkade\Demandware\Modules;
 
+use Illuminate\Support\Collection;
 use Arkade\Demandware\Entities\Customer;
-use Arkade\Demandware\Exceptions\TokenNotFoundException;
-use Arkade\Demandware\Exceptions\UnexpectedException;
 use Arkade\Demandware\Parsers\CustomerParser;
 use Arkade\Demandware\Serializers\AddressSerializer;
 use Arkade\Demandware\Serializers\CustomerSerializer;
-use Illuminate\Support\Collection;
+use Arkade\Demandware\Exceptions\UnexpectedException;
+use Arkade\Demandware\Exceptions\TokenNotFoundException;
 
 Class Customers Extends AbstractModule
 {
-
     /**
      * @param $id
      * @return Customer
@@ -35,6 +34,23 @@ Class Customers Extends AbstractModule
     public function findByEmail($email)
     {
         $data = $this->search('email', $email);
+
+        if (count($data)) {
+            return $this->findById($data->first());
+        }else{
+            throw new UnexpectedException('No customers found');
+        }
+    }
+
+    /**
+     * @param $email
+     * @return Customer
+     * @throws \Arkade\Demandware\Exceptions\UnexpectedException
+     */
+    public function findByCustomerNumber($customerNumber)
+    {
+        echo 'find by customer id';
+        $data = $this->search('customerNo', $customerNumber);
 
         if (count($data)) {
             return $this->findById($data->first());
@@ -149,7 +165,8 @@ Class Customers Extends AbstractModule
             [
                 'headers' => ['Content-Type' => 'application/json'],
                 'body'    => json_encode($query),
-            ]);
+            ]
+        );
 
         $collection = new Collection;
 
@@ -163,6 +180,4 @@ Class Customers Extends AbstractModule
 
         return $collection;
     }
-
-
 }

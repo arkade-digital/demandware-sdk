@@ -7,6 +7,7 @@ use Arkade\Demandware\Entities\Customer;
 use Arkade\Demandware\Parsers\CustomerParser;
 use Arkade\Demandware\Serializers\AddressSerializer;
 use Arkade\Demandware\Serializers\CustomerSerializer;
+use Arkade\Demandware\Serializers\CustomerListCustomerSerializer;
 use Arkade\Demandware\Exceptions\UnexpectedException;
 use Arkade\Demandware\Exceptions\TokenNotFoundException;
 
@@ -120,7 +121,7 @@ Class Customers Extends AbstractModule
                 $this->useData("customer_lists/{$this->getSiteName()}/customers"),
                 [
                     'headers' => ['Content-Type' => 'application/json'],
-                    'body'    => (new CustomerSerializer)->serialize($customer, true)
+                    'body'    => (new CustomerListCustomerSerializer)->serialize($customer, true)
                 ]
             ));
 

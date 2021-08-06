@@ -105,6 +105,39 @@ Class Customers Extends AbstractModule
         return $this->findById($customerNo);
     }
 
+
+    /**
+     * Create customer via customer_list endpoint
+     * @param Customer $customer
+     * @return Customer
+     * @throws TokenNotFoundException
+     * @throws UnexpectedException
+     */
+    public function customerListCreate(Customer $customer) {
+
+        $customerResponse = (new CustomerParser)->parse(
+            $this->client->post(
+                $this->useData("customer_lists/{$this->getSiteName()}/customers"),
+                [
+                    'headers' => ['Content-Type' => 'application/json'],
+                    'body'    => (new CustomerSerializer)->serialize($customer, true)
+                ]
+            ));
+
+        $customerNo = $customerResponse->getCustomerNo();
+        if ($customer->getPrimaryAddress()) {
+            $this->client->post(
+                $this->useData("customer_lists/{$this->getSiteName()}/customers/{$customerNo}/addresses"),
+                [
+                    'headers' => ['Content-Type' => 'application/json'],
+                    'body'    => (new AddressSerializer)->serialize($customer->getPrimaryAddress()),
+                ]
+            );
+        }
+
+        return $this->findById($customerNo);
+    }
+
     /**
      * @param Customer $customer
      * @return \Arkade\Demandware\Entities\Customer

@@ -77,6 +77,11 @@ class Client
     protected $clientId;
 
     /**
+     * @var
+     */
+    protected $customerCreationMethod;
+
+    /**
      * Client constructor.
      *
      * @param Authentication $auth
@@ -197,6 +202,23 @@ class Client
         $this->clientId = $clientId;
 
         return $this;
+    }
+
+    /**
+     * Set customer creation method, customers or customer_list
+     * @param $method
+     * @return $this
+     */
+    public function setCustomerCreationMethod($method) {
+        $this->customerCreationMethod = $method;
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getCustomerCreationMethod() {
+        return $this->customerCreationMethod;
     }
 
     /**

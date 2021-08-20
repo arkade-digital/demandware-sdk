@@ -81,6 +81,12 @@ class Client
      */
     protected $customerCreationMethod;
 
+
+    /**
+     * @var
+     */
+    protected $customerActivationToken;
+
     /**
      * Client constructor.
      *
@@ -220,6 +226,25 @@ class Client
     public function getCustomerCreationMethod() {
         return $this->customerCreationMethod;
     }
+
+    /**
+     * Set activation token config
+     * @param $token
+     * @return $this
+     */
+    public function setCustomerActivationToken($token) {
+        $this->customerActivationToken = $token;
+        return $this;
+    }
+
+    /**
+     * Get activation token config
+     * @return mixed
+     */
+    public function getCustomerActivationToken() {
+        return $this->customerActivationToken;
+    }
+
 
     /**
      * @return bool

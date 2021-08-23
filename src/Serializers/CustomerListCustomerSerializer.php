@@ -29,6 +29,11 @@ class CustomerListCustomerSerializer
         // strip null value items
         $serialized = array_filter($serialized);
 
+        if (isset($serialized['activation_token'])) {
+            $serialized['c_activationToken'] = $serialized['activation_token'];
+            unset($serialized['activation_token']);
+        }
+
         if (isset($serialized['creation_date'])) unset($serialized['creation_date']);
         if (isset($serialized['last_modified'])) unset($serialized['last_modified']);
         if (isset($serialized['last_login_time'])) unset($serialized['last_login_time']);

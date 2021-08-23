@@ -122,6 +122,11 @@ class Customer extends AbstractEntity
     protected $previousVisitTime;
 
     /**
+     * @var string
+     */
+    protected $ActivationToken;
+
+    /**
      * @return string
      */
     public function getCustomerId()
@@ -535,6 +540,23 @@ class Customer extends AbstractEntity
         return $this;
     }
 
+    /**
+     * Set activation token
+     * @param $activationToken
+     * @return $this
+     */
+    public function setActivationToken($activationToken) {
+        $this->ActivationToken = $activationToken;
+        return $this;
+    }
+
+    /**
+     * Get activation token
+     * @return string
+     */
+    public function getActivationToken() {
+        return $this->ActivationToken;
+    }
     /**
      * @return Array
      */

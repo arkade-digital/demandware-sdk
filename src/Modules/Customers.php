@@ -161,13 +161,23 @@ Class Customers Extends AbstractModule
         $customerNo = $customerResponse->getCustomerNo();
         if ($customer->getPrimaryAddress()) {
             if($customer->getPrimaryAddress()->getAddressId()) {
-                $this->client->patch(
-                    $this->useData("customer_lists/{$this->getSiteName()}/customers/{$customerNo}/addresses/{$customer->getPrimaryAddress()->getAddressId()}"),
-                    [
-                        'headers' => ['Content-Type' => 'application/json'],
-                        'body' => (new AddressSerializer)->serialize($customer->getPrimaryAddress()),
-                    ]
-                );
+                try {
+                    $this->client->patch(
+                        $this->useData("customer_lists/{$this->getSiteName()}/customers/{$customerNo}/addresses/{$customer->getPrimaryAddress()->getAddressId()}"),
+                        [
+                            'headers' => ['Content-Type' => 'application/json'],
+                            'body' => (new AddressSerializer)->serialize($customer->getPrimaryAddress()),
+                        ]
+                    );
+                }catch(\Exception $e){
+                    $this->client->post(
+                        $this->useData("customer_lists/{$this->getSiteName()}/customers/{$customerNo}/addresses"),
+                        [
+                            'headers' => ['Content-Type' => 'application/json'],
+                            'body'    => (new AddressSerializer)->serialize($customer->getPrimaryAddress()),
+                        ]
+                    );
+                }
             }
         }
 
